@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:mislab3/exams.dart';
 
+import 'calendar.dart';
+
 void main() {
-  runApp(MyApp());
+  runApp(
+    MaterialApp(
+      home: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -46,13 +52,13 @@ class _MyAppState extends State<MyApp> {
   final List<ExamApplication> elements = [
     ExamApplication(
         course: "Mobilni Informaciski Sistemi",
-        dateTime: DateTime(2022, 1, 20, 17, 30)),
+        dateTime: DateTime(2023, 8, 20, 17, 30)),
     ExamApplication(
         course: "Kalkulus",
-        dateTime: DateTime(2022, 1, 22, 11, 45)),
+        dateTime: DateTime(2023, 8, 22, 11, 45)),
     ExamApplication(
         course: "Verojatnost i Statistika",
-        dateTime: DateTime(2022, 1, 24, 15, 30))
+        dateTime: DateTime(2023, 8, 24, 15, 30))
   ];
   String _course = "";
   String _y = "2022";
@@ -78,37 +84,56 @@ class _MyAppState extends State<MyApp> {
           title: Text(title),
             actions: <Widget>[
               Padding(
-                      padding: EdgeInsets.only(right: 20.0),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.white,
-                          onPrimary: Colors.blue// Background color
+                  padding: EdgeInsets.only(right:15.0),
+                  child: Container(
+                    color: Colors.white,
+                    child:IconButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CalendarScreen(elements: elements),
                         ),
-                        child: const Text("Add +"),
-                        onPressed: () {
-                          setState(() {
-                            _course = _c.text;
-                            _y = _year.text;
-                            _m = _month.text;
-                            _d = _day.text;
-                            _h = _hour.text;
-                            _min = _minute.text;
-                            addExamApplication(
-                                _course,
-                                int.parse(_y),
-                                int.parse(_m),
-                                int.parse(_d),
-                                int.parse(_h),
-                                int.parse(_min));
-                            _c.text = "";
-                            _year.text = "";
-                            _month.text = "";
-                            _day.text = "";
-                            _hour.text = "";
-                            _minute.text = "";
-                          });
-                        },
-                      ))
+                      );
+                    },
+                    icon: Icon(
+                      Icons.calendar_month,
+                      color: Colors.blue,
+                    ),
+                    iconSize: 20.0,
+                  ),),),
+              Padding(
+                  padding: EdgeInsets.only(right:15.0),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        primary: Colors.white,
+                        onPrimary: Colors.blue// Background color
+                    ),
+                    child: const Text("Add +"),
+                    onPressed: () {
+                      setState(() {
+                        _course = _c.text;
+                        _y = _year.text;
+                        _m = _month.text;
+                        _d = _day.text;
+                        _h = _hour.text;
+                        _min = _minute.text;
+                        addExamApplication(
+                            _course,
+                            int.parse(_y),
+                            int.parse(_m),
+                            int.parse(_d),
+                            int.parse(_h),
+                            int.parse(_min));
+                        _c.text = "";
+                        _year.text = "";
+                        _month.text = "";
+                        _day.text = "";
+                        _hour.text = "";
+                        _minute.text = "";
+                      });
+                    },
+                  ))
             ],
     ),
         body: Column(
