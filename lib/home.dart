@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import 'calendar.dart';
 import 'exams.dart';
+import 'map.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -71,6 +72,25 @@ class _HomePageState extends State<HomePage> {
         appBar: AppBar(
           title: Text(title),
           actions: <Widget>[
+            Padding(
+              padding: EdgeInsets.only(right:5.0),
+              child: Container(
+                color: Colors.white,
+                child:IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MapPage(),
+                      ),
+                    );
+                  },
+                  icon: Icon(
+                    Icons.map_outlined,
+                    color: Colors.blue,
+                  ),
+                  iconSize: 20.0,
+                ),),),
             Padding(
               padding: EdgeInsets.only(right:5.0),
               child: Container(
