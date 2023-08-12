@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 
 import 'calendar.dart';
 import 'exams.dart';
@@ -26,11 +27,95 @@ class _HomePageState extends State<HomePage> {
     _day = TextEditingController();
     _hour = TextEditingController();
     _minute = TextEditingController();
+    createNotification();
     super.initState();
+    AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+      if (!isAllowed) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Allow Notifications'),
+            content: const Text('Our app would like to send you notifications'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text(
+                  'Don\'t Allow',
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 18,
+                  ),
+                ),
+              ),
+              TextButton(
+                  onPressed: () => AwesomeNotifications()
+                      .requestPermissionToSendNotifications()
+                      .then((_) => Navigator.pop(context)),
+                  child: const Text(
+                    'Allow',
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ))
+            ],
+          ),
+        );
+      }
+    });
+    AwesomeNotifications().actionStream.listen((notification) {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (_) => CalendarScreen(elements: elements),
+          ),
+              (route) => route.isFirst);
+    });
+    super.initState();
+  }
+
+  void createNotification() {
+    for (var element in elements) {
+      if (isNextWeek(element.dateTime)) {
+        createNotificationForExam(element);
+      }
+    }
+  }
+
+  bool isNextWeek(DateTime datetime) {
+    final day = DateTime.now().add(const Duration(days: 7));
+    return day.day == datetime.day && day.month == datetime.month && day.year == datetime.year;
+  }
+
+  Future<void> createNotificationForExam(ExamApplication exam) async {
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: createUniqueId(),
+        channelKey: 'channel',
+        title: 'Exam: ${exam.course}',
+        body:
+        'You have an exam next week !!!',
+        notificationLayout: NotificationLayout.Default,
+      ),
+      actionButtons: [
+        NotificationActionButton(
+          key: 'CONFIRM',
+          label: 'Confirm',
+        )
+      ],
+    );
+  }
+  int createUniqueId() {
+    return DateTime.now().microsecondsSinceEpoch.remainder(100000);
   }
 
   @override
   void dispose() {
+    AwesomeNotifications().actionSink.close();
+    AwesomeNotifications().createdSink.close();
     _c.dispose();
     _year.dispose();
     _month.dispose();
@@ -47,7 +132,7 @@ class _HomePageState extends State<HomePage> {
         dateTime: DateTime(2023, 8, 20, 17, 30)),
     ExamApplication(
         course: "Verojatnost i Statistika",
-        dateTime: DateTime(2023, 8, 24, 15, 30))
+        dateTime: DateTime(2023, 8, 19, 15, 30))
   ];
   String _course = "";
   String _y = "2022";
@@ -62,6 +147,8 @@ class _HomePageState extends State<HomePage> {
           course: course,
           dateTime: DateTime(year, month, day, hour, minute)));
     });
+    if(isNextWeek(DateTime(year, month, day, hour, minute)))
+      createNotificationForExam(ExamApplication(course: course, dateTime: DateTime(year, month, day, hour, minute)));
   }
 
   @override
