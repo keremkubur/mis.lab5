@@ -52,6 +52,7 @@ dev_dependencies:
   firebase_auth: ^4.7.2
   firebase_core: ^2.15.0
   firebase_messaging: ^14.6.5
+  awesome_notifications: ^0.6.19
   google_maps_flutter: ^2.2.4
   geolocator: ^9.0.2
   url_launcher: ^6.0.0
