@@ -1,14 +1,34 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'exams.dart';
+import 'home.dart';
 
 class MapPage extends StatefulWidget {
-  const MapPage({super.key});
-
+  const MapPage({super.key,  required this.elements});
+  final List<ExamApplication> elements;
 
   @override
   State<MapPage> createState() => _MapPageState();
+
+  List<Marker> getMarkers(){
+    List<Marker> markers = [];
+    for (var element in elements) {
+      markers.add(Marker(markerId: MarkerId(randomNum()),
+          position: LatLng(element.lat, element.long),
+          infoWindow: InfoWindow(
+            title: 'Exam location',)));
+    }
+    return markers;
+  }
+
+  String randomNum() {
+    var rng = Random();
+    return rng.nextInt(100).toString();
+  }
 }
 
 class _MapPageState extends State<MapPage> {

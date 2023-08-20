@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
-
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:geolocator/geolocator.dart';
 import 'calendar.dart';
 import 'exams.dart';
 import 'map.dart';
@@ -132,7 +133,9 @@ class _HomePageState extends State<HomePage> {
         dateTime: DateTime(2023, 8, 20, 17, 30)),
     ExamApplication(
         course: "Verojatnost i Statistika",
-        dateTime: DateTime(2023, 8, 19, 15, 30))
+        dateTime: DateTime(2023, 8, 19, 15, 30),
+        lat: 42.004715,
+        long: 21.408212)
   ];
   String _course = "";
   String _y = "2022";
@@ -168,7 +171,7 @@ class _HomePageState extends State<HomePage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => MapPage(),
+                        builder: (context) => MapPage(elements: elements),
                       ),
                     );
                   },
